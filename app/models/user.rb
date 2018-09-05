@@ -1,4 +1,8 @@
 class User < ApplicationRecord
+  has_one :owned_list, class_name: 'List', foreign_key: :owner_id
+  has_many :list_members
+  has_many :lists, through: :list_members
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :recoverable,
