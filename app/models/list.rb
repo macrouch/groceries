@@ -7,4 +7,8 @@ class List < ApplicationRecord
 
   validates :name, presence: true
   validates :owner_id, presence: true
+
+  def needed_items
+    list_items.where(need: true).sort_by { |item| item.name.downcase }
+  end
 end

@@ -25,4 +25,8 @@ class User < ApplicationRecord
       end
     end
   end
+
+  def list
+    owned_list || lists.first
+  end
 end

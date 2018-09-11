@@ -10,6 +10,10 @@ class List extends React.Component {
     this.state = { items: [] };
   }
 
+  getToken() {
+    return $('meta[name="csrf-token"]').attr('content');
+  }
+
   componentDidMount() {
     fetch('/get_items')
     .then((response) => response.json())
@@ -19,20 +23,44 @@ class List extends React.Component {
   }
 
   handleAdd(item) {
-    var items = this.state.items.slice();
-    items.push(item);
-
-    // POST here
-    items = items.sort((a, b) => a.name > b.name);
-    this.setState({ items: items });
+    fetch('/add_item', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': this.getToken(),
+      },
+      body: JSON.stringify({
+        item: {
+          name: item.name,
+          quantity: item.quantity,
+        },
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.setState({ items: data });
+    });
   }
 
-  handleRemove(i) {
-    var items = this.state.items.slice();
-    items.splice(i, 1);
-
-    // DELETE here
-    this.setState({ items: items });
+  handleRemove(item) {
+    fetch('/remove_item', {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': this.getToken(),
+      },
+      body: JSON.stringify({
+        item: {
+          id: item.id,
+        },
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.setState({ items: data });
+    });
   }
 
   renderItem(item, index) {
@@ -41,7 +69,7 @@ class List extends React.Component {
         name={item.name}
         quantity={item.quantity}
         key={index}
-        onClick={() => this.handleRemove(index)}
+        onClick={() => this.handleRemove(item)}
       />
     );
   }
@@ -49,7 +77,9 @@ class List extends React.Component {
   render() {
     return (
       <div className="">
+        <hr />
         <ItemForm addItem={item => this.handleAdd(item)} />
+        <hr />
         <ListGroup>
           {this.state.items.map((item, index) => (
             this.renderItem(item, index)

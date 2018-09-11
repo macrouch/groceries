@@ -36,6 +36,7 @@ class ItemForm extends React.Component {
   render() {
     return (
       <Form onSubmit={this.handleSubmit}>
+        <h5>Add new Item</h5>
         <FormGroup>
           <Input
             name="name"

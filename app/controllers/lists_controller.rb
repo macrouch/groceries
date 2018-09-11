@@ -1,26 +1,75 @@
 class ListsController < ApplicationController
   before_action :authenticate_user!
+  before_action :set_list, only: [:show, :edit, :get_items, :add_item, :remove_item]
 
   def show
+    redirect_to new_lists_path unless current_user.list
   end
 
-  def edit
-    #code
+  def new
+    @list = List.new
   end
+
+  def create
+    list = List.new(list_params)
+    list.owner = current_user
+    list.save
+
+    redirect_to root_url
+  end
+
+  def edit; end
 
   def update
-    #code
+    respond_to do |format|
+      if @list.update_attributes(list_params)
+        format.html { redirect_to root_url }
+      else
+        format.html { render action: :edit }
+        format.json { render json: @list.errors, status: :unprocessable_entity }
+      end
+    end
   end
 
   def get_items
-    @items = [{name: 'Item 1', quantity: ''}, {name: 'Item 2', quantity: 2}, {name: 'Item 3', quantity: 3}, {name: 'A Item', quantity: ''}].sort_by { |item| item[:name] }
-
     respond_to do |format|
-      format.json { render json: @items }
+      format.json { render json: @list.needed_items.to_json }
     end
   end
 
   def add_item
-    #code
+    item = Item.find_or_create_by(name: item_params[:name])
+    list_item = @list.list_items.find_or_create_by(item: item)
+    list_item.need = true
+    list_item.quantity = item_params[:quantity]
+    list_item.save
+
+    respond_to do |format|
+      format.json { render json: @list.needed_items.to_json }
+    end
+  end
+
+  def remove_item
+    list_item = ListItem.where(id: item_params[:id]).first
+    list_item.need = false
+    list_item.save
+
+    respond_to do |format|
+      format.json { render json: @list.needed_items.to_json }
+    end
+  end
+
+  private
+
+  def list_params
+    params.require(:list).permit(:name)
+  end
+
+  def item_params
+    params.require(:item).permit(:id, :name, :quantity)
+  end
+
+  def set_list
+    @list = current_user.list
   end
 end
