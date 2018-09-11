@@ -1,0 +1,18 @@
+<h2>Edit <%= @list.name %></h2>
+
+<%= form_for @list, url: { action: 'update' } do |f| %>
+  <div class="form-group">
+    <%= f.text_field :name, class: 'form-control', placeholder: 'List Name' %>
+  </div>
+  <%= f.submit 'Update List', class: 'btn btn-primary' %>
+<% end %>
+
+<hr>
+
+<p>Use this link to invite others to share this list</p>
+
+<p>
+  <%= text_field_tag 'join_link', join_list_url(join_key: @list.join_key), class: 'form-control', readonly: true %>
+</p>
+
+<p><%= link_to 'Generate new link', new_join_link_path(@list), class: 'btn btn-primary', method: :put %> This will make previous links invalid</p>

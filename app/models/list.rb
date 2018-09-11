@@ -7,6 +7,9 @@ class List < ApplicationRecord
 
   validates :name, presence: true
   validates :owner_id, presence: true
+  validates :join_key, presence: true
+
+  has_secure_token :join_key
 
   def needed_items
     list_items.where(need: true).sort_by { |item| item.name.downcase }

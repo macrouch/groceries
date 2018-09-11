@@ -4,7 +4,7 @@
 
 <p>If you just want to join an existing list don't create one here, just get the join link from the owner of that list.</p>
 
-<%= form_for @list, url: {action: "create"} do |f| %>
+<%= form_for @list, url: { action: 'create' } do |f| %>
   <div class="form-group">
     <%= f.text_field :name, class: 'form-control', placeholder: 'List Name' %>
   </div>

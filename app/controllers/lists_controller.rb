@@ -1,9 +1,9 @@
 class ListsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_list, only: [:show, :edit, :get_items, :add_item, :remove_item]
+  before_action :set_list, only: [:show, :edit, :update, :get_items, :add_item, :remove_item]
 
   def show
-    redirect_to new_lists_path unless current_user.list
+    redirect_to new_list_path unless current_user.list
   end
 
   def new
@@ -13,6 +13,7 @@ class ListsController < ApplicationController
   def create
     list = List.new(list_params)
     list.owner = current_user
+    list.regenerate_join_key # why doesn't this work automatically?
     list.save
 
     redirect_to root_url
@@ -57,6 +58,12 @@ class ListsController < ApplicationController
     respond_to do |format|
       format.json { render json: @list.needed_items.to_json }
     end
+  end
+
+  def join
+    list = List.where(join_key: params[:join_key]).first
+    list.members << current_user
+    redirect_to list
   end
 
   private

@@ -8,4 +8,5 @@ describe List do
   it { should have_many(:items).through(:list_items) }
   it { should validate_presence_of :name }
   it { should validate_presence_of :owner_id }
+  it { should validate_presence_of :join_key }
 end
