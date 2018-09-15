@@ -11,7 +11,7 @@ class List < ApplicationRecord
 
   has_secure_token :join_key
 
-  def needed_items
-    list_items.where(need: true).sort_by { |item| item.name.downcase }
+  def needed_items(need_item = true)
+    list_items.where(need: need_item).sort_by { |item| item.name.downcase }
   end
 end

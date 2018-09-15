@@ -7,7 +7,10 @@ class List extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = { items: [] };
+    this.state = {
+      neededItems: [],
+      availableItems: [],
+    };
   }
 
   getToken() {
@@ -18,7 +21,10 @@ class List extends React.Component {
     fetch('/get_items')
     .then((response) => response.json())
     .then((data) => {
-      this.setState({ items: data });
+      this.setState({
+        neededItems: data.needed,
+        availableItems: data.available,
+      });
     });
   }
 
@@ -39,7 +45,10 @@ class List extends React.Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      this.setState({ items: data });
+      this.setState({
+        neededItems: data.needed,
+        availableItems: data.available,
+      });
     });
   }
 
@@ -59,7 +68,10 @@ class List extends React.Component {
     })
     .then((response) => response.json())
     .then((data) => {
-      this.setState({ items: data });
+      this.setState({
+        neededItems: data.needed,
+        availableItems: data.available,
+      });
     });
   }
 
@@ -78,10 +90,13 @@ class List extends React.Component {
     return (
       <div className="">
         <hr />
-        <ItemForm addItem={item => this.handleAdd(item)} />
+        <ItemForm
+          addItem={item => this.handleAdd(item)}
+          availableItems={this.state.availableItems}
+        />
         <hr />
         <ListGroup>
-          {this.state.items.map((item, index) => (
+          {this.state.neededItems.map((item, index) => (
             this.renderItem(item, index)
           ))}
         </ListGroup>

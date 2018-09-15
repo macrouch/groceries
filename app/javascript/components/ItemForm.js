@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button, Form, FormGroup, Input } from 'reactstrap';
+import CreatableSelect from 'react-select/lib/Creatable';
 
 class ItemForm extends React.Component {
   constructor(props) {
@@ -10,6 +11,7 @@ class ItemForm extends React.Component {
     };
 
     this.handleChange = this.handleChange.bind(this);
+    this.handleSelect = this.handleSelect.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
 
@@ -19,6 +21,11 @@ class ItemForm extends React.Component {
     const name = target.name;
 
     this.setState({ [name]: value });
+  }
+
+  handleSelect(item) {
+    const value = item.value;
+    this.setState({ name: value });
   }
 
   handleSubmit(event) {
@@ -34,16 +41,23 @@ class ItemForm extends React.Component {
   }
 
   render() {
+    const { name } = this.state;
+    const value = { value: name, label: name };
+    const options = this.props.availableItems.map((item, index) => (
+      {
+        value: item.name,
+        label: item.name,
+      }
+    ));
+
     return (
       <Form onSubmit={this.handleSubmit}>
         <h5>Add new Item</h5>
         <FormGroup>
-          <Input
-            name="name"
-            id="name"
-            placeholder="Name"
-            value={this.state.name}
-            onChange={this.handleChange}
+          <CreatableSelect
+            value={value}
+            onChange={this.handleSelect}
+            options={options}
           />
         </FormGroup>
         <FormGroup>

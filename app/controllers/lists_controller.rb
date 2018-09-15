@@ -34,7 +34,7 @@ class ListsController < ApplicationController
 
   def get_items
     respond_to do |format|
-      format.json { render json: @list.needed_items.to_json }
+      format.json { render json: { needed: @list.needed_items, available: @list.needed_items(false) }.to_json }
     end
   end
 
@@ -46,7 +46,7 @@ class ListsController < ApplicationController
     list_item.save
 
     respond_to do |format|
-      format.json { render json: @list.needed_items.to_json }
+      format.json { render json: { needed: @list.needed_items, available: @list.needed_items(false) }.to_json }
     end
   end
 
@@ -56,7 +56,7 @@ class ListsController < ApplicationController
     list_item.save
 
     respond_to do |format|
-      format.json { render json: @list.needed_items.to_json }
+      format.json { render json: { needed: @list.needed_items, available: @list.needed_items(false) }.to_json }
     end
   end
 
