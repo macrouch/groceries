@@ -1,5 +1,5 @@
 {
-  "name": "grocery_list",
+  "name": "groceries",
   "private": true,
   "dependencies": {
     "@rails/webpacker": "^3.3.0",
