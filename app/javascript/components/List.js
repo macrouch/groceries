@@ -75,7 +75,6 @@ class List extends React.Component {
   }
 
   handleUpdate(item) {
-    console.log(item);
     fetch('/update_item', {
       method: 'PUT',
       headers: {
