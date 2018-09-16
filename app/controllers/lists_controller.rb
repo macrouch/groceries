@@ -1,6 +1,6 @@
 class ListsController < ApplicationController
   before_action :authenticate_user!
-  before_action :set_list, only: [:show, :edit, :update, :get_items, :add_item, :remove_item]
+  before_action :set_list, only: [:show, :edit, :update, :get_items, :add_item, :update_item, :remove_item]
 
   def show
     redirect_to new_list_path unless current_user.list
@@ -42,6 +42,16 @@ class ListsController < ApplicationController
     item = Item.find_or_create_by(name: item_params[:name])
     list_item = @list.list_items.find_or_create_by(item: item)
     list_item.need = true
+    list_item.quantity = item_params[:quantity]
+    list_item.save
+
+    respond_to do |format|
+      format.json { render json: { needed: @list.needed_items, available: @list.needed_items(false) }.to_json }
+    end
+  end
+
+  def update_item
+    list_item = ListItem.where(id: item_params[:id]).first
     list_item.quantity = item_params[:quantity]
     list_item.save
 

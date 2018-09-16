@@ -1,5 +1,4 @@
 import React from 'react';
-import { ListGroup } from 'reactstrap';
 import Item from './Item';
 import ItemForm from './ItemForm';
 
@@ -75,31 +74,50 @@ class List extends React.Component {
     });
   }
 
-  renderItem(item, index) {
-    return (
-      <Item
-        name={item.name}
-        quantity={item.quantity}
-        key={index}
-        onClick={() => this.handleRemove(item)}
-      />
-    );
+  handleUpdate(item) {
+    console.log(item);
+    fetch('/update_item', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRF-Token': this.getToken(),
+      },
+      body: JSON.stringify({
+        item: {
+          id: item.id,
+          quantity: item.newQuantity,
+        },
+      }),
+    })
+    .then((response) => response.json())
+    .then((data) => {
+      this.setState({
+        neededItems: data.needed,
+        availableItems: data.available,
+      });
+    });
   }
 
   render() {
     return (
-      <div className="">
+      <div>
         <hr />
         <ItemForm
           addItem={item => this.handleAdd(item)}
           availableItems={this.state.availableItems}
         />
         <hr />
-        <ListGroup>
-          {this.state.neededItems.map((item, index) => (
-            this.renderItem(item, index)
-          ))}
-        </ListGroup>
+        {this.state.neededItems.map((item, index) => (
+          <Item
+            id={item.id}
+            name={item.name}
+            quantity={item.quantity}
+            key={index}
+            onUpdate={newItem => this.handleUpdate(newItem)}
+            onRemove={() => this.handleRemove(item)}
+          />
+        ))}
       </div>
     );
   }
